@@ -1,5 +1,7 @@
 import Home from "@/src/home-components/Home";
+import { latestUrl, scheduleUrl } from "@/src/subplease";
 import { AiringResponse, Mode } from "@/src/types/ApiResponses";
+import { LatestResponse, ScheduleResponse } from "@/src/types/SubpleaseApiRes";
 import axios from "axios";
 
 
@@ -13,13 +15,14 @@ const HomePage = async ({
 }) => {
   const sParams = await searchParams;
 
-  const animepaheBaseUrl = "https://animepahe.si/api";
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
-  const fullUrl = `${animepaheBaseUrl}?m=airing${sParams.page ? `&page${sParams.page}` : ""}`
+  const airingData = await axios.get<LatestResponse>(latestUrl(timeZone));
 
-  const airingData = await axios.get<AiringResponse>(useAnimepaheApi(fullUrl));
+  const upcoming = await axios.get<ScheduleResponse>(scheduleUrl(timeZone))
 
-  return <Home initialData={airingData.data} />;
+
+  return <Home upcoming={upcoming.data} latest={airingData.data} />;
 };
 
 export default HomePage;

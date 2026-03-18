@@ -1,4 +1,5 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
+import torrentMappingsSlice from "./store-slices/torrentsMappings";
 
 const appSlice = createSlice({
   name: "app",
@@ -11,6 +12,7 @@ const appSlice = createSlice({
 export const store = configureStore({
   reducer: {
     app: appSlice.reducer,
+    torrentsMappings: torrentMappingsSlice.reducer
   },
 });
 

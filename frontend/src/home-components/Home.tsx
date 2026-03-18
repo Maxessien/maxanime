@@ -4,6 +4,8 @@ import { useRouter } from "nextjs-toploader/app";
 import { MdArrowLeft, MdArrowRight } from "react-icons/md";
 import { AiringResponse } from "../types/ApiResponses";
 import AnimeCard from "./AnimeCard";
+import { LatestAnimeEntry, LatestResponse, ScheduleDays, ScheduleResponse } from "../types/SubpleaseApiRes";
+import { useEffect, useState } from "react";
 
 export const formatApi = (pageUrl: string, redirectBaseUrl: string) => {
   const slice = pageUrl.split("?");
@@ -12,44 +14,26 @@ export const formatApi = (pageUrl: string, redirectBaseUrl: string) => {
   return redirectUrl;
 };
 
-const Home = ({ initialData }: { initialData: AiringResponse }) => {
+const Home = ({ latest, upcoming }: { latest: LatestResponse, upcoming: ScheduleResponse }) => {
+  const [data, setData] = useState<{latest: LatestAnimeEntry[], upcoming: ScheduleDays}>({latest: [], upcoming: upcoming.schedule})
   const router = useRouter();
+
+  useEffect(()=>{
+    const latestTemp: LatestAnimeEntry[] = []
+    for (let key in latest) latestTemp.push(latest[key])
+    setData(state=>({...state, latest: latestTemp}))
+  }, [])
 
   return (
     <>
-      <h2 className="mb-3 text-xl font-semibold text-white text-left">
-        Airing
-      </h2>
+        <h2 className="mb-3 text-xl font-semibold text-white text-left">
+          Airing
+        </h2>
       <section className="mb-3 grid grid-cols-1 sm:grid-cols-2 gap-2 justify-center md:justify-start lg:grid-cols-2 xl:grid-cols-3">
-        {initialData.data.map((data) => {
+        {data.latest.map((data) => {
           return <AnimeCard anime={data} />;
         })}
       </section>
-      <div className="w-full flex justify-center items-center gap-2">
-        {initialData.prev_page_url?.length && (
-          <button
-            onClick={() =>
-              router.push(formatApi(initialData.next_page_url ?? "", "/"))
-            }
-            className="rounded-md text-white text-base font-medium text-center px-3 py-2"
-          >
-            <MdArrowLeft />
-          </button>
-        )}
-        <span className="text-base font-medium text-white">
-          {initialData.current_page}
-        </span>
-        {initialData.next_page_url?.length && (
-          <button
-            onClick={() =>
-              router.push(formatApi(initialData.prev_page_url ?? "", "/"))
-            }
-            className="rounded-md text-white text-base font-medium text-center px-3 py-2"
-          >
-            <MdArrowRight />
-          </button>
-        )}
-      </div>
     </>
   );
 };

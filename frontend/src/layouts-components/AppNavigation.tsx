@@ -28,7 +28,7 @@ const AppNavigation = () => {
             <span className="hidden sm:block">Anime List</span>
           </Link>
           <Link href={"/watchlist"} className={listStyles(pathname === "/watchlist")}>
-            <span>
+            <span className="text-3xl">
               <MdPlaylistPlay />
             </span>
             <span className="hidden sm:block">Watchlist</span>
