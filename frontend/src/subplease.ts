@@ -18,45 +18,6 @@ export const getShowId = async(title: string)=>{
     const res = await fetch(specificShowHtml(title))
     const html = await res.text()
     const soup = parseHtml(html)
-    return soup.find({predicate: (el)=>el.attributes.get("id") === "show-release-table"})?.attributes.get("sid")
+    const showId = soup.find({predicate: (el)=>el.attributes.get("id") === "show-release-table"})?.attributes.get("sid")
+    return {showId, soup}
 }
-
-// import ffmpegPath from "ffmpeg-static";
-// import ffmpeg from "fluent-ffmpeg";
-// import { existsSync } from "fs";
-// import path from "path";
-// import parseHtml from "tinysoup"
-
-
-// export const runtime = "nodejs";
-
-// function resolveFfmpegBinaryPath(): string | null {
-//   const candidates = [
-//     ffmpegPath,
-//     path.join(
-//       process.cwd(),
-//       "node_modules",
-//       "ffmpeg-static",
-//       process.platform === "win32" ? "ffmpeg.exe" : "ffmpeg",
-//     ),
-//   ];
-
-//   for (const candidate of candidates) {
-//     if (typeof candidate !== "string" || candidate.length === 0) {
-//       continue;
-//     }
-
-//     const normalizedPath = path.normalize(candidate);
-//     if (existsSync(normalizedPath)) {
-//       return normalizedPath;
-//     }
-//   }
-
-//   return null;
-// }
-
-// const resolvedFfmpegPath = resolveFfmpegBinaryPath();
-// console.log("resolved", resolvedFfmpegPath);
-// if (resolvedFfmpegPath) {
-//   ffmpeg.setFfmpegPath(resolvedFfmpegPath);
-// }

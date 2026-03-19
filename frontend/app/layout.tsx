@@ -16,11 +16,12 @@ type RootLayoutProps = {
   children: ReactNode;
 };
 
+
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body>
-		<TopLoader />
+        <TopLoader />
         <Provider>
           <AppLayout>{children}</AppLayout>
         </Provider>
@@ -30,7 +31,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           newestOnTop
           pauseOnHover
           position="top-center"
-		  theme="dark"
+          theme="dark"
         />
       </body>
     </html>
