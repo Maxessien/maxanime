@@ -78,7 +78,7 @@ const getAllShows = async () => {
 };
 
 const downloadTorrent = async (torrentUrl: string) => {
-  const client = new Webtorrent();
+  const client = new Webtorrent({maxConns: 25});
 
   const bar = new SingleBar({}, Presets.shades_classic);
 
