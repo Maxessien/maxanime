@@ -105,7 +105,7 @@ const addNewShow = async (req: Request, res: Response) => {
     uploadState.setUploadState(true);
     lockAcquired = true;
 
-    addFilesToCloud(titles, range);
+    await addFilesToCloud(titles, range);
 
     return res
       .status(200)
