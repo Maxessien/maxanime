@@ -1,11 +1,9 @@
 "use client";
 
 import { useRouter } from "nextjs-toploader/app";
-import { MdArrowLeft, MdArrowRight } from "react-icons/md";
-import { AiringResponse } from "../types/ApiResponses";
-import AnimeCard from "./AnimeCard";
-import { LatestAnimeEntry, LatestResponse, ScheduleDays, ScheduleResponse } from "../types/SubpleaseApiRes";
 import { useEffect, useState } from "react";
+import { LatestAnimeEntry, LatestResponse, ScheduleDays, ScheduleResponse } from "../../../backend/types/SubpleaseApiRes";
+import AnimeCard from "./AnimeCard";
 
 export const formatApi = (pageUrl: string, redirectBaseUrl: string) => {
   const slice = pageUrl.split("?");

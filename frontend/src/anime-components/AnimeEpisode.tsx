@@ -1,6 +1,6 @@
 "use client";
 
-import { ShowInfoAnimeEntry } from "../types/SubpleaseApiRes";
+import { ShowInfoAnimeEntry } from "../../../backend/types/SubpleaseApiRes";
 import AnimeEpisodeCard from "./AnimeEpisodeCard";
 
 interface ShowInfo {

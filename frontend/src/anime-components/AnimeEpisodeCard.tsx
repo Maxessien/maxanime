@@ -1,8 +1,8 @@
 import { useRouter } from "nextjs-toploader/app";
 import { useDispatch } from "react-redux";
 import { v4 } from "uuid";
+import { ShowInfoAnimeEntry } from "../../../backend/types/SubpleaseApiRes";
 import { setMappings } from "../store-slices/torrentsMappings";
-import { ShowInfoAnimeEntry } from "../types/SubpleaseApiRes";
 
 
 

@@ -1,10 +1,9 @@
 import { useRouter } from "nextjs-toploader/app";
-import { AiringResponseItem } from "../types/ApiResponses";
-import { LatestAnimeEntry } from "../types/SubpleaseApiRes";
-import { baseUrl } from "../subplease";
-import { setMappings, TorrentMappings } from "../store-slices/torrentsMappings";
 import { useDispatch } from "react-redux";
-import { v4 } from "uuid"
+import { v4 } from "uuid";
+import { LatestAnimeEntry } from "../../../backend/types/SubpleaseApiRes";
+import { baseUrl } from "../../../backend/utils/subplease";
+import { setMappings } from "../store-slices/torrentsMappings";
 
 
 const AnimeCard = ({ anime }: { anime: LatestAnimeEntry }) => {
