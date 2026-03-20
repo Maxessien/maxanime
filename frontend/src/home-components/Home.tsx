@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter } from "nextjs-toploader/app";
-import AnimeCard from "./AnimeCard";
 import { Episode } from "../types/ApiResponses";
+import AnimeCard from "./AnimeCard";
 
 export const formatApi = (pageUrl: string, redirectBaseUrl: string) => {
   const slice = pageUrl.split("?");
@@ -20,9 +20,15 @@ const Home = ({ latest }: { latest: Episode[] }) => {
           Airing
         </h2>
       <section className="mb-3 grid grid-cols-1 sm:grid-cols-2 gap-2 justify-center md:justify-start lg:grid-cols-2 xl:grid-cols-3">
-        {latest.map((data) => {
-          return <AnimeCard anime={data} />;
-        })}
+        {latest.length > 0 ? (
+          latest.map((data) => {
+            return <AnimeCard key={data.releaseId} anime={data} />;
+          })
+        ) : (
+          <p className="col-span-full w-full text-base font-medium text-center text-white py-4">
+            No airing episodes yet.
+          </p>
+        )}
       </section>
     </>
   );

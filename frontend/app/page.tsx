@@ -1,5 +1,6 @@
 import Home from "@/src/home-components/Home";
-import { Episode, Show } from "@/src/types/ApiResponses";
+import { Episode } from "@/src/types/ApiResponses";
+import { noNullFn } from "@/src/utils/fecthUtil";
 import axios from "axios";
 
 
@@ -11,11 +12,17 @@ const HomePage = async ({
 }: {
   searchParams: Promise<{ page: string }>;
 }) => {
+  const airingData = await noNullFn(
+    async () => {
+      const response = await axios.get<Episode[]>(
+        `${process.env.BACKEND_URL}/releases`,
+      );
+      return response.data;
+    },
+    [] as Episode[],
+  );
 
-  const airingData = await axios.get<Episode[]>(`/${process.env.BACKEND_URL}/releases`);
-
-
-  return <Home latest={airingData.data} />;
+  return <Home latest={airingData} />;
 };
 
 export default HomePage;
