@@ -1,8 +1,6 @@
 "use client";
 
-import { ShowInfoAnimeEntry } from "../../../backend/types/SubpleaseApiRes";
 import { ShowWithEp } from "../home-components/AnimeCard";
-import { Show } from "../types/ApiResponses";
 import AnimeEpisodeCard from "./AnimeEpisodeCard";
 
 const AnimeEpisode = ({ initialData }: { initialData: ShowWithEp }) => {
