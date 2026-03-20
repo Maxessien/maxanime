@@ -1,3 +1,7 @@
+import {config} from "dotenv"
+
+config()
+
 import express from "express"
 import showRoutes from "./routes/showRoutes.js"
 import { connectMongoDb } from "./configs/mongooseConfig.js"
