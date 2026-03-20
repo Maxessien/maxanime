@@ -1,12 +1,17 @@
 import express from "express"
 import showRoutes from "./routes/showRoutes.js"
 import { connectMongoDb } from "./configs/mongooseConfig.js"
+import cors from "cors"
 
 
 const app = express()
 
+app.use(cors({
+    origin: process.env.CORS_ORIGIN ?? ""
+}))
 
 app.use(express.json())
+
 
 
 let isUploading = false
