@@ -11,6 +11,7 @@ import type {
 } from "../types/SubpleaseApiRes.js";
 import { allShowsLink, baseUrl, getShowId, specificShowLink } from "./subplease.js";
 import {parse} from "node-html-parser";
+import { deleteFileAtPath } from "./deleteFileAtPath.js";
 
 
 function resolveFfmpegBinaryPath(): string | null {
@@ -100,25 +101,32 @@ const downloadTorrent = async (torrentUrl: string) => {
 
   const file = torr.files?.[0];
 
-  const filePath = path.join(process.cwd(), "uploads", file?.name ?? "video.mp4");
+  const filePath = path.join(process.cwd(), file?.name ?? "video.mp4");
 
   const stream = file?.createReadStream();
-  await new Promise((resolve, reject) => {
-    ffmpeg(stream as Readable)
-      .outputOptions("-crf 28")
-      .outputOptions("-preset fast")
-      .videoCodec("libx265")
-      .audioCodec("aac")
-      .videoBitrate("200k")
-      .format("mp4")
-      .audioBitrate("128k")
-      .output(filePath)
-      .on("error", reject)
-      .on("end", resolve).run();
-  });
+  try {
+    await new Promise((resolve, reject) => {
+      ffmpeg(stream as Readable)
+        .outputOptions("-crf 28")
+        .outputOptions("-preset fast")
+        .videoCodec("libx265")
+        .audioCodec("aac")
+        .videoBitrate("200k")
+        .format("mp4")
+        .audioBitrate("128k")
+        .output(filePath)
+        .on("error", reject)
+        .on("end", resolve).run();
+    });
 
-  client.destroy()
-  return filePath;
+    return filePath;
+  } catch (err) {
+    await deleteFileAtPath(filePath);
+    throw err;
+  } finally {
+    bar.stop();
+    client.destroy();
+  }
 };
 
 export { convertInfoResObjToArr, downloadTorrent, ffmpeg, getAllShows, getShowsInfo };

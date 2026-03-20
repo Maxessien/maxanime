@@ -10,6 +10,7 @@ import {
   ffmpeg,
   getShowsInfo,
 } from "./downloadFiles.js";
+import { deleteFileAtPath } from "./deleteFileAtPath.js";
 
 interface FileEp {
   snapshotUrl: string;
@@ -107,30 +108,40 @@ const addFilesToCloud = async (titles: string[], range: [number, number]) => {
         for (const res of info.downloads) {
           if (Number(res.res) > 761) break;
           const filepath = await downloadTorrent(res.torrent);
-          const { size } = await stat(filepath);
+          let imgPath = "";
 
-          const imgPath: string = await new Promise((resolve, reject) => {
-            const uniqueId = randomUUID();
-            const outPath = join(process.cwd(), `${uniqueId}.jpg`);
-            ffmpeg(filepath)
-              .screenshots({ count: 1, timemarks: ["00:02:00"] })
-              .on("end", () => resolve(outPath))
-              .on("error", reject)
-              .output(outPath);
-          });
+          try {
+            const { size } = await stat(filepath);
 
-          const fileupload = await uploader.upload(filepath);
-          const imgupload = await uploader.upload(imgPath);
+            imgPath = await new Promise((resolve, reject) => {
+              const uniqueId = randomUUID();
+              const outPath = join(process.cwd(), `${uniqueId}.jpg`);
+              ffmpeg(filepath)
+                .screenshots({ count: 1, timemarks: ["00:02:00"] })
+                .on("end", () => resolve(outPath))
+                .on("error", reject)
+                .output(outPath);
+            });
 
-          if (!releaseObj.snapshotUrl.trim()) {
-            releaseObj.snapshotUrl = imgupload.secure_url;
+            const fileupload = await uploader.upload(filepath);
+            await deleteFileAtPath(filepath);
+
+            const imgupload = await uploader.upload(imgPath);
+            await deleteFileAtPath(imgPath);
+
+            if (!releaseObj.snapshotUrl.trim()) {
+              releaseObj.snapshotUrl = imgupload.secure_url;
+            }
+
+            releaseObj.res.push({
+              quality: Number(res.res),
+              url: fileupload.secure_url,
+              sizeBytes: size,
+            });
+          } finally {
+            await deleteFileAtPath(filepath);
+            await deleteFileAtPath(imgPath);
           }
-
-          releaseObj.res.push({
-            quality: Number(res.res),
-            url: fileupload.secure_url,
-            sizeBytes: size,
-          });
         }
 
         if (releaseObj.res.length === 0) {
