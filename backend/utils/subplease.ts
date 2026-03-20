@@ -1,4 +1,4 @@
-import { parseHtml } from 'tinysoup';
+import {parse} from "node-html-parser"
 
 export const baseUrl = "https://subsplease.org"
 
@@ -17,7 +17,7 @@ export const specificShowLink = (timeZone: string, showId: string)=> baseUrl + `
 export const getShowId = async(title: string)=>{
     const res = await fetch(specificShowHtml(title))
     const html = await res.text()
-    const soup = parseHtml(html)
-    const showId = soup.find({predicate: (el)=>el.attributes.get("id") === "show-release-table"})?.attributes.get("sid")
+    const soup = parse(html)
+    const showId = soup.querySelector("#show-release-table")?.getAttribute("sid")
     return {showId, soup}
 }

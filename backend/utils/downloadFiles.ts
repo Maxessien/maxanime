@@ -5,12 +5,13 @@ import ffmpegPath from "ffmpeg-static";
 import { existsSync } from "fs";
 import path from "path";
 import type { Readable } from "stream";
-import parseHtml, { getText } from "tinysoup";
 import Webtorrent from "webtorrent";
 import type {
   ShowInfoResponse
 } from "../types/SubpleaseApiRes.js";
 import { allShowsLink, baseUrl, getShowId, specificShowLink } from "./subplease.js";
+import {parse} from "node-html-parser";
+
 
 function resolveFfmpegBinaryPath(): string | null {
   const candidates = [
@@ -52,12 +53,9 @@ const getShowsInfo = async (title: string) => {
   const info = await axios.get<ShowInfoResponse>(
     specificShowLink(timezone, showId),
   );
-  const desc = soup.find({
-    name: "p",
-    predicate: (el) => el?.parent?.classList?.has("series-syn") ?? false,
-  });
-  const img = soup.find({name: "img", predicate: (el)=>el?.classList?.has("img-responsive") ?? false})
-  return {...info.data, image: baseUrl + img.attributes.get("src"), description: getText(desc)};
+  const desc = soup.querySelector(".series-syn")
+  const img = soup.querySelector(".img-responsive")
+  return {...info.data, image: baseUrl + img?.getAttribute("src"), description: desc?.text};
 };
 
 const convertInfoResObjToArr = <T>(obj: { [key: string]: T }): T[] => {
@@ -71,13 +69,10 @@ const convertInfoResObjToArr = <T>(obj: { [key: string]: T }): T[] => {
 const getAllShows = async () => {
   const allShowsRes = await fetch(allShowsLink);
   const allShowsHtml = await allShowsRes.text();
-  const soup = parseHtml(allShowsHtml);
+  const soup = parse(allShowsHtml);
   const titles: string[] = soup
-    .findAll({
-      name: "a",
-      predicate: (el) => el.parent?.classList?.has("all-shows-link"),
-    })
-    .map((el) => getText(el));
+    .querySelectorAll(".all-shows-link")
+    .map((el) => el.text);
   return titles;
 };
 

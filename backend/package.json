@@ -24,9 +24,9 @@
     "express-rate-limit": "^8.3.1",
     "ffmpeg-static": "^5.3.0",
     "mongoose": "^9.3.1",
+    "node-html-parser": "^7.1.0",
     "nodemon": "^3.1.14",
     "pg": "^8.20.0",
-    "tinysoup": "^1.1.0",
     "webtorrent": "^2.8.5"
   },
   "overrides": {

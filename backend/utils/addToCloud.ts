@@ -72,7 +72,7 @@ const addFilesToCloud = async (titles: string[], range: [number, number]) => {
           show: title,
           id: newShowId,
           showImage: showInfo.image,
-          description: showInfo.description
+          description: showInfo.description ?? ""
         });
       }
 
