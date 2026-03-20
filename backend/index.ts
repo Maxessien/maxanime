@@ -1,11 +1,25 @@
 import express from "express"
 import showRoutes from "./routes/showRoutes.js"
+import { connectMongoDb } from "./configs/mongooseConfig.js"
 
 
 const app = express()
 
 
 app.use(express.json())
+
+
+let isUploading = false
+//Boolean to prevent multiple upload writes at the same time
+export const uploadState = {
+    isUploading: (): boolean=> isUploading,
+    setUploadState: (val: boolean): void=>{
+        isUploading = val
+    }
+}
+
+//Connect to mongodb
+await connectMongoDb()
 
 //Add routes here
 app.use("/shows", showRoutes)

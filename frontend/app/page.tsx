@@ -1,7 +1,5 @@
 import Home from "@/src/home-components/Home";
-import { latestUrl, scheduleUrl } from "@/src/subplease";
-import { AiringResponse, Mode } from "@/src/types/ApiResponses";
-import { LatestResponse, ScheduleResponse } from "@/src/types/SubpleaseApiRes";
+import { Show } from "@/src/types/ApiResponses";
 import axios from "axios";
 
 
@@ -11,18 +9,16 @@ export const useAnimepaheApi = (url: string)=>`https://api.scraperapi.com/?api_k
 const HomePage = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ m: Mode; page: string }>;
+  searchParams: Promise<{ page: string }>;
 }) => {
   const sParams = await searchParams;
 
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
-  const airingData = await axios.get<LatestResponse>(latestUrl(timeZone));
-
-  const upcoming = await axios.get<ScheduleResponse>(scheduleUrl(timeZone))
+  const airingData = await axios.get<Show[]>(`/${process.env.BACKEND_URL}/show`);
 
 
-  return <Home upcoming={upcoming.data} latest={airingData.data} />;
+  return <Home latest={airingData.data} />;
 };
 
 export default HomePage;

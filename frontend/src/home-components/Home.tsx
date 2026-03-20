@@ -4,6 +4,7 @@ import { useRouter } from "nextjs-toploader/app";
 import { useEffect, useState } from "react";
 import { LatestAnimeEntry, LatestResponse, ScheduleDays, ScheduleResponse } from "../../../backend/types/SubpleaseApiRes";
 import AnimeCard from "./AnimeCard";
+import { Show } from "../types/ApiResponses";
 
 export const formatApi = (pageUrl: string, redirectBaseUrl: string) => {
   const slice = pageUrl.split("?");
@@ -12,15 +13,8 @@ export const formatApi = (pageUrl: string, redirectBaseUrl: string) => {
   return redirectUrl;
 };
 
-const Home = ({ latest, upcoming }: { latest: LatestResponse, upcoming: ScheduleResponse }) => {
-  const [data, setData] = useState<{latest: LatestAnimeEntry[], upcoming: ScheduleDays}>({latest: [], upcoming: upcoming.schedule})
+const Home = ({ latest }: { latest: Show[] }) => {
   const router = useRouter();
-
-  useEffect(()=>{
-    const latestTemp: LatestAnimeEntry[] = []
-    for (let key in latest) latestTemp.push(latest[key])
-    setData(state=>({...state, latest: latestTemp}))
-  }, [])
 
   return (
     <>
@@ -28,7 +22,7 @@ const Home = ({ latest, upcoming }: { latest: LatestResponse, upcoming: Schedule
           Airing
         </h2>
       <section className="mb-3 grid grid-cols-1 sm:grid-cols-2 gap-2 justify-center md:justify-start lg:grid-cols-2 xl:grid-cols-3">
-        {data.latest.map((data) => {
+        {latest.map((data) => {
           return <AnimeCard anime={data} />;
         })}
       </section>

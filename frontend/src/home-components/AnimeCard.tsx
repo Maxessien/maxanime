@@ -4,27 +4,20 @@ import { v4 } from "uuid";
 import { LatestAnimeEntry } from "../../../backend/types/SubpleaseApiRes";
 import { baseUrl } from "../../../backend/utils/subplease";
 import { setMappings } from "../store-slices/torrentsMappings";
+import { Show } from "../types/ApiResponses";
 
 
-const AnimeCard = ({ anime }: { anime: LatestAnimeEntry }) => {
+const AnimeCard = ({ anime }: { anime: Show }) => {
     const router = useRouter()
-    const {show, downloads, episode, image_url} = anime
-
-    const dispatch = useDispatch()
-
-    const navigate = ()=>{
-      const key  = v4()
-      dispatch(setMappings({key: key, value: downloads.map((val)=>({...val, title: show}))}))
-      router.push(`/play/${key}`)
-    }
+    const {show, episodes, id, showImage} = anime
     
   return (
     <>
-      <div onClick={()=>navigate()} className="w-full aspect-video rounded-md relative">
+      <div onClick={()=>router.push(`/play/${id}/${episodes?.[0].episode}`)} className="w-full aspect-video rounded-md relative">
         <div className="z-0 absolute top-0 left-0 w-full h-full overflow-hidden">
           <img
             className="object-cover h-full w-full object-center"
-            src={baseUrl + image_url}
+            src={showImage}
             alt={"image"}
           />
         </div>
@@ -32,7 +25,7 @@ const AnimeCard = ({ anime }: { anime: LatestAnimeEntry }) => {
           <p className="text-white font-semibold text-base wrap-break-word text-ellipsis">
             {show}
           </p>
-          <p className="text-white font-semibold text-lg">{`EP - ${episode}`}</p>
+          <p className="text-white font-semibold text-lg">{`EP - ${episodes?.[0].episode}`}</p>
         </div>
       </div>
     </>

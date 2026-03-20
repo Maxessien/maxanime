@@ -1,20 +1,18 @@
-import type {
-  ShowInfoAnimeEntry,
-  ShowInfoResponse,
-} from "../types/SubpleaseApiRes.js";
-import { allShowsLink, getShowId, specificShowLink } from "./subplease.js";
-import axios from "axios";
-import type { UploadApiResponse } from "cloudinary";
-import ffmpegPath from "ffmpeg-static";
 import ffmpeg from "@ts-ffmpeg/fluent-ffmpeg";
+import axios from "axios";
+import { Presets, SingleBar } from "cli-progress";
+import ffmpegPath from "ffmpeg-static";
 import { existsSync } from "fs";
 import path from "path";
-import Webtorrent from "webtorrent";
 import type { Readable } from "stream";
-import { Presets, SingleBar } from "cli-progress";
 import parseHtml, { getText } from "tinysoup";
-import type { Element } from "./../node_modules/tinysoup/src/types.js";
+import Webtorrent from "webtorrent";
+import type {
+  ShowInfoResponse
+} from "../types/SubpleaseApiRes.js";
 import type { Document } from "./../node_modules/tinysoup/src/document.js";
+import type { Element } from "./../node_modules/tinysoup/src/types.js";
+import { allShowsLink, getShowId, specificShowLink } from "./subplease.js";
 
 function resolveFfmpegBinaryPath(): string | null {
   const candidates = [
@@ -51,6 +49,8 @@ const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 const getShowsInfo = async (title: string) => {
   const { showId } = await getShowId(title);
+
+  if(!showId) throw new Error("Show not found")
   const info = await axios.get<ShowInfoResponse>(
     specificShowLink(timezone, showId),
   );
@@ -102,7 +102,7 @@ const downloadTorrent = async (torrentUrl: string) => {
 
   const file = torr.files?.[0];
 
-  const filePath = path.join(process.cwd(), `/uploads/${file?.name}`);
+  const filePath = path.join(process.cwd(), "uploads", file?.name ?? "video.mp4");
 
   const stream = file?.createReadStream();
   await new Promise((resolve, reject) => {
@@ -116,10 +116,12 @@ const downloadTorrent = async (torrentUrl: string) => {
       .audioBitrate("128k")
       .output(filePath)
       .on("error", reject)
-      .on("end", resolve);
+      .on("end", resolve).run();
   });
 
+  client.destroy()
   return filePath;
 };
 
-export { downloadTorrent, getShowsInfo, convertInfoResObjToArr, getAllShows, ffmpeg };
+export { convertInfoResObjToArr, downloadTorrent, ffmpeg, getAllShows, getShowsInfo };
+
