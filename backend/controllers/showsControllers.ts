@@ -105,14 +105,12 @@ const addNewShow = async (req: Request, res: Response) => {
     uploadState.setUploadState(true);
     lockAcquired = true;
 
-    await addFilesToCloud(titles, range);
+    addFilesToCloud(titles, range);
 
     return res
-      .status(201)
+      .status(200)
       .json({
-        message: "Shows added successfully",
-        titles: titles.length,
-        range,
+        message: "Operation started",
       });
   } catch (err) {
     console.log(err);
