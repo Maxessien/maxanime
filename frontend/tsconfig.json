@@ -36,6 +36,7 @@
     ".next/dev/types/**/*.ts"
 , "../backend/utils/subplease.ts", "../backend/types/SubpleaseApiRes.ts"  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "./backend"
   ]
 }
