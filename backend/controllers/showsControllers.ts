@@ -21,18 +21,6 @@ const getShows = async (req: Request, res: Response) => {
   }
 };
 
-const getLatestReleases = async (req: Request, res: Response) => {
-  try {
-    const shows = await ReleasesModel.find()
-      .sort([["releaseDate", "desc"]])
-      .limit(10)
-      .lean();
-    return res.status(200).json(shows);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "No files" });
-  }
-};
 
 const getSpecificShow = async (req: Request, res: Response) => {
   try {
@@ -121,4 +109,4 @@ const addNewShow = async (req: Request, res: Response) => {
   }
 };
 
-export { getShows, getSpecificShow, addNewShow, getLatestReleases };
+export { getShows, getSpecificShow, addNewShow };

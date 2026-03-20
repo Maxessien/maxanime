@@ -12,7 +12,7 @@ import type {
 } from "../types/SubpleaseApiRes.js";
 import type { Document } from "./../node_modules/tinysoup/src/document.js";
 import type { Element } from "./../node_modules/tinysoup/src/types.js";
-import { allShowsLink, getShowId, specificShowLink } from "./subplease.js";
+import { allShowsLink, baseUrl, getShowId, specificShowLink } from "./subplease.js";
 
 function resolveFfmpegBinaryPath(): string | null {
   const candidates = [
@@ -48,13 +48,18 @@ if (resolvedFfmpegPath) {
 const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 const getShowsInfo = async (title: string) => {
-  const { showId } = await getShowId(title);
+  const { showId, soup } = await getShowId(title);
 
   if(!showId) throw new Error("Show not found")
   const info = await axios.get<ShowInfoResponse>(
     specificShowLink(timezone, showId),
   );
-  return info.data;
+  const desc = soup.find({
+    name: "p",
+    predicate: (el: Element) => el?.parent?.classList?.has("series-syn") ?? false,
+  });
+  const img = soup.find({name: "img", predicate: (el: Element)=>el?.classList?.has("img-responsive") ?? false})
+  return {...info.data, image: baseUrl + img.attributes.get("src"), description: getText(desc)};
 };
 
 const convertInfoResObjToArr = <T>(obj: { [key: string]: T }): T[] => {

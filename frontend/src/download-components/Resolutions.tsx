@@ -1,40 +1,37 @@
 "use client";
 
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../store";
+import { Episode } from "../types/ApiResponses";
 
-const Resolutions = ({ resId }: { resId }) => {
-  const mappings = useSelector((state: RootState) => state.torrentsMappings);
-  const resolutions = mappings?.[resId];
+const Resolutions = ({ episode }: { episode: Episode }) => {
   const [vidUrl, setVidUrl] = useState(
-    `/api/download?url=${resolutions?.[0].magnet}`,
+    episode.res?.[0].url,
   );
 
-  const downloadVid = async (magnetUrl: string) => {
+  const downloadVid = async (vidUrl: string) => {
     const link = document.createElement("a");
-    link.href = `/api/download?url=${magnetUrl}`;
-    link.download = "anime.mp4";
+    link.href = vidUrl;
+    link.download = `${episode.title}.mp4`;
     link.click();
   };
 
   return (
     <>
       <h2 className="mb-3 text-2xl font-semibold text-white text-center">
-        {resolutions?.[0].title ?? "N/A"}
+        {episode?.[0].title ?? "N/A"}
       </h2>
       <h3 className="mb-3 text-xl font-semibold text-white text-left">Play</h3>
       <video
         className="w-full max-w-150 mb-5 aspect-video mx-auto"
-        // src={vidUrl}
+        src={vidUrl}
       ></video>
       <ul className="flex justify-center items-center gap-3 md:justify-start flex-wrap">
-        {resolutions?.map(({ magnet, res }) => (
+        {episode.res?.map(({ quality, sizeBytes, url }) => (
           <button
-            onClick={() => setVidUrl(`/api/download?url=${magnet}`)}
+            onClick={() => setVidUrl(url)}
             className="text-xl font-semibold px-3 py-2 rounded-md bg-gray-800 text-white shadow-[inset_0px_0px_10px_-7px_black]"
           >
-            {`Play - ${res}P`}
+            {`Play - ${quality}P (${(sizeBytes/1000).toFixed(1)}MB)`}
           </button>
         ))}
       </ul>
@@ -43,12 +40,12 @@ const Resolutions = ({ resId }: { resId }) => {
         Download
       </h3>
       <ul className="flex justify-center items-center gap-3 md:justify-start flex-wrap">
-        {resolutions?.map(({ magnet, res }) => (
+        {episode?.res?.map(({ quality, sizeBytes, url }) => (
           <button
-            onClick={() => downloadVid(magnet)}
+            onClick={() => downloadVid(url)}
             className="text-xl font-semibold px-3 py-2 rounded-md bg-gray-800 text-white shadow-[inset_0px_0px_10px_-7px_black]"
           >
-            {`Download - ${res}P`}
+            {`Download - ${quality}P (${(sizeBytes/1000).toFixed(1)}MB)`}
           </button>
         ))}
       </ul>

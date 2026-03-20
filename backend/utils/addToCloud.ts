@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { stat } from "fs/promises";
 import { join } from "path";
 import { uploader } from "../configs/cloudinaryConfig.js";
 import { FileModel } from "../models/FileModel.js";
@@ -15,7 +16,7 @@ interface FileEp {
   title?: string;
   episode: number;
   releaseDate: Date | string;
-  res: { quality: number; url: string }[];
+  res: { quality: number; url: string; sizeBytes: number }[];
   showId: string;
   releaseId?: string;
 }
@@ -70,7 +71,8 @@ const addFilesToCloud = async (titles: string[], range: [number, number]) => {
         await FileModel.create({
           show: title,
           id: newShowId,
-          showImage: "",
+          showImage: showInfo.image,
+          description: showInfo.description
         });
       }
 
@@ -105,6 +107,7 @@ const addFilesToCloud = async (titles: string[], range: [number, number]) => {
         for (const res of info.downloads) {
           if (Number(res.res) > 761) break;
           const filepath = await downloadTorrent(res.torrent);
+          const { size } = await stat(filepath);
 
           const imgPath: string = await new Promise((resolve, reject) => {
             const uniqueId = randomUUID();
@@ -126,6 +129,7 @@ const addFilesToCloud = async (titles: string[], range: [number, number]) => {
           releaseObj.res.push({
             quality: Number(res.res),
             url: fileupload.secure_url,
+            sizeBytes: size,
           });
         }
 

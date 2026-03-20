@@ -14,7 +14,7 @@ const releasesSchema = new Schema({
   title: String,
   episode: Number,
   releaseDate: Date,
-  res: [{ quality: Number, url: String }],
+  res: [{ quality: Number, url: String, sizeBytes: Number }],
 });
 
 releasesSchema.index({showId: 1, episode: 1}, {unique: true})

@@ -1,5 +1,6 @@
 import { parseHtml } from 'tinysoup';
 import type { Element } from './../node_modules/tinysoup/src/types.js';
+import type { Document } from "./../node_modules/tinysoup/src/document.js";
 
 export const baseUrl = "https://subsplease.org"
 
@@ -18,7 +19,7 @@ export const specificShowLink = (timeZone: string, showId: string)=> baseUrl + `
 export const getShowId = async(title: string)=>{
     const res = await fetch(specificShowHtml(title))
     const html = await res.text()
-    const soup = parseHtml(html)
+    const soup: Document = parseHtml(html)
     const showId = soup.find({predicate: (el: Element)=>el.attributes.get("id") === "show-release-table"})?.attributes.get("sid")
     return {showId, soup}
 }

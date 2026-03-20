@@ -1,27 +1,26 @@
 import { useRouter } from "nextjs-toploader/app";
-import { useDispatch } from "react-redux";
-import { v4 } from "uuid";
-import { ShowInfoAnimeEntry } from "../../../backend/types/SubpleaseApiRes";
-import { setMappings } from "../store-slices/torrentsMappings";
+import { Episode } from "../types/ApiResponses";
 
 
 
-const AnimeEpisodeCard = ({ animeEp }: { animeEp: ShowInfoAnimeEntry }) => {
+const AnimeEpisodeCard = ({ animeEp }: { animeEp: Episode }) => {
     const router = useRouter()
-    const {episode, downloads, show} = animeEp
+    const {episode, snapshotUrl, releaseId} = animeEp
 
-    const dispatch = useDispatch()
-
-    const navigate = ()=>{
-      const key  = v4()
-      dispatch(setMappings({key: key, value: downloads.map((val)=>({magnet: val.torrent, res: val.res, title: show}))}))
-      router.push(`/play/${key}`)
-    }
   return (
     <>
-    <button onClick={navigate} className="text-xl font-semibold px-3 py-2 rounded-md bg-gray-800 text-white shadow-[inset_0px_0px_10px_-7px_black]">
-      {`Episode - ${episode}`}
-    </button>
+      <div onClick={()=>router.push(`/play/${releaseId}`)} className="w-full aspect-video rounded-md relative">
+        <div className="z-0 absolute top-0 left-0 w-full h-full overflow-hidden">
+          <img
+            className="object-cover h-full w-full object-center"
+            src={snapshotUrl}
+            alt={"image"}
+          />
+        </div>
+        <div className="z-1 absolute text-shadow-2xs text-shadow-black top-0 left-0 p-2 transition-all duration-300 hover:bg-[linear-gradient(to_top,black,transparent)] flex flex-col justify-end items-start gap-1 w-full h-full">
+          <p className="text-white font-semibold text-lg">{`EP - ${episode}`}</p>
+        </div>
+      </div>
     </>
   );
 };

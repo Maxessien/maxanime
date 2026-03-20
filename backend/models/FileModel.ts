@@ -6,6 +6,7 @@ const fileSchema = new Schema(
     id: { type: String, required: true, unique: true },
     show: { type: String, required: true },
     showImage: String,
+    description: String
   },
   { timestamps: true },
 );

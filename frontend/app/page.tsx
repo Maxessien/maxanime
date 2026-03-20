@@ -1,5 +1,5 @@
 import Home from "@/src/home-components/Home";
-import { Show } from "@/src/types/ApiResponses";
+import { Episode, Show } from "@/src/types/ApiResponses";
 import axios from "axios";
 
 
@@ -11,11 +11,8 @@ const HomePage = async ({
 }: {
   searchParams: Promise<{ page: string }>;
 }) => {
-  const sParams = await searchParams;
 
-  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-
-  const airingData = await axios.get<Show[]>(`/${process.env.BACKEND_URL}/show`);
+  const airingData = await axios.get<Episode[]>(`/${process.env.BACKEND_URL}/releases`);
 
 
   return <Home latest={airingData.data} />;

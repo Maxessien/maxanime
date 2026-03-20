@@ -1,19 +1,22 @@
 export interface Resolution {
-  quality: Number;
-  url: String;
+  quality: number;
+  url: string;
+  sizeBytes: number;
 }
 
 export interface Episode {
-  snapshotUrl: String;
-  title: String;
-  episode: Number;
-  releaseDate: Date;
-  res: Resolution[];
+  showId: string,
+  releaseId: string,
+  snapshotUrl: string,
+  title: string,
+  episode: number,
+  releaseDate: Date,
+  res: Resolution[],
 }
 
 export interface Show {
-  id: string;
-  show: string;
-  episodes: Episode[];
-  showImage: string
-}
+    id: string,
+    show: string,
+    showImage: string,
+    description: string
+  }

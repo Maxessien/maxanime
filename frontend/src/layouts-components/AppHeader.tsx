@@ -4,24 +4,16 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
-import { SearchResponse } from "../types/ApiResponses";
 import SearchResults from "./SearchResults";
+import { Show } from "../types/ApiResponses";
 
 const AppHeader = () => {
   const [search, setSearch] = useState<{
     query: string;
-    result: SearchResponse;
+    result: Show[];
   }>({
     query: "",
-    result: {
-      total: 0,
-      current_page: 0,
-      data: [],
-      from: 0,
-      last_page: 0,
-      per_page: 0,
-      to: 0,
-    },
+    result: [],
   });
 
   const checkSearchValidity = () => {
@@ -30,8 +22,9 @@ const AppHeader = () => {
 
   const submitForm = async () => {
     if (!checkSearchValidity()) return;
+    return
     try {
-      const res = await axios.get<SearchResponse>(
+      const res = await axios.get<Show[]>(
         `/api/search?q=${search.query}`,
       );
       setSearch((state) => ({ ...state, result: res.data }));
@@ -40,15 +33,7 @@ const AppHeader = () => {
       console.log(err);
       setSearch((state) => ({
         ...state,
-        result: {
-          total: 0,
-          current_page: 0,
-          data: [],
-          from: 0,
-          last_page: 0,
-          per_page: 0,
-          to: 0,
-        },
+        result: [],
       }));
       throw err;
     }
@@ -70,7 +55,7 @@ const AppHeader = () => {
             <FaSearch />
           </button>
           {checkSearchValidity() && <div className="absolute top-full left-0 z-999 w-full">
-            <SearchResults isFetching={isFetching} data={search.result.data} />
+            <SearchResults isFetching={isFetching} data={search.result} />
           </div>}
         </form>
       </header>
